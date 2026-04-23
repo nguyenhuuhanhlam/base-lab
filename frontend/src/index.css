@@ -1,24 +1,24 @@
-/* ─── CSS Layer Declaration (theo tài liệu PrimeReact + Tailwind) ─── */
-/* Thứ tự ưu tiên: tailwind-base → primereact → tailwind-utilities     */
-@layer tailwind-base, primereact, tailwind-utilities;
+/* 1. PrimeReact Theme */
+@import "primereact/resources/themes/nano/theme.css";
 
-/* 1. Tailwind preflight (reset) → vào layer tailwind-base */
-@import "tailwindcss/preflight" layer(tailwind-base);
-@import "tailwindcss/theme" layer(tailwind-base);
+/* 2. PrimeReact Core CSS */
+@import "primereact/resources/primereact.min.css";
 
-/* 2. PrimeReact → vào layer primereact (thắng tailwind-base) */
-@import "primereact/resources/themes/nano/theme.css" layer(primereact);
-@import "primereact/resources/primereact.min.css" layer(primereact);
-
-/* 3. PrimeIcons — không cần layer vì chỉ là @font-face & icon classes */
+/* 3. PrimeIcons */
 @import "primeicons/primeicons.css";
 
-/* 4. Tailwind utilities → vào layer tailwind-utilities (cao nhất) */
-@import "tailwindcss/utilities" layer(tailwind-utilities);
-
-/* 5. Global base */
-html,
-body,
-#root {
+/* 4. Global Base */
+html, body, #root {
   height: 100%;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #334155;
 }

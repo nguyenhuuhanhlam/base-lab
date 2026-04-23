@@ -1,17 +1,26 @@
+import { useState } from "react";
 import { AppHeader } from "./app_header";
 import { AppSidebar } from "./app_sidebar";
+import "./layout.css";
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      {/* Header */}
-      <AppHeader />
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-      {/* Body = Sidebar + Content */}
-      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        <AppSidebar />
-        <main style={{ flex: 1, padding: "1rem", overflow: "auto" }}>
-          {children}
+  return (
+    <div className="app-container">
+      {/* Sidebar - Fixed Position */}
+      <AppSidebar isOpen={sidebarOpen} />
+
+      {/* Main Content Wrapper */}
+      <div className={`app-main ${sidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
+        {/* Top Header */}
+        <AppHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+
+        {/* Page Content */}
+        <main className="app-content">
+          <div className="content-wrapper">
+            {children}
+          </div>
         </main>
       </div>
     </div>

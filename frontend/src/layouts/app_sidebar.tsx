@@ -1,32 +1,50 @@
-import { PanelMenu } from "primereact/panelmenu";
-import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-const menuItems = [
-  {
-    label: "Main",
-    items: [
-      { label: "Dashboard", command: () => {} },
-      { label: "Products",  command: () => {} },
-    ],
-  },
-];
+interface AppSidebarProps {
+  isOpen: boolean;
+}
 
-export function AppSidebar() {
-  const navigate = useNavigate();
-
-  const items = [
-    {
-      label: "Main",
-      items: [
-        { label: "Dashboard", command: () => navigate("/") },
-        { label: "Products",  command: () => navigate("/products") },
-      ],
-    },
-  ];
-
+export function AppSidebar({ isOpen }: AppSidebarProps) {
   return (
-    <div style={{ width: "220px", borderRight: "1px solid #dee2e6", minHeight: "100%" }}>
-      <PanelMenu model={items} style={{ width: "100%" }} />
-    </div>
+    <aside className={`app-sidebar ${isOpen ? "sidebar-open" : "sidebar-closed"}`}>
+      <div className="sidebar-header">
+        <div className="brand-container">
+          <div className="brand-logo">
+            <i className="pi pi-bolt"></i>
+          </div>
+          <span className="brand-name">Base Lab</span>
+        </div>
+      </div>
+      
+      <div className="sidebar-content custom-scrollbar">
+        <ul className="sidebar-menu">
+          <li className="menu-category">
+            Favorites
+          </li>
+          <li className="menu-item">
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => `menu-link ${isActive ? "active" : ""}`}
+            >
+              <i className="pi pi-home"></i>
+              <span>Dashboard</span>
+            </NavLink>
+          </li>
+          
+          <li className="menu-category">
+            Apps
+          </li>
+          <li className="menu-item">
+            <NavLink 
+              to="/products" 
+              className={({ isActive }) => `menu-link ${isActive ? "active" : ""}`}
+            >
+              <i className="pi pi-box"></i>
+              <span>Products</span>
+            </NavLink>
+          </li>
+        </ul>
+      </div>
+    </aside>
   );
 }

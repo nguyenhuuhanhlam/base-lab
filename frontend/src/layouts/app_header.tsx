@@ -1,21 +1,51 @@
-import { Menubar } from "primereact/menubar";
 import { useAuthStore } from "@/store/auth_store";
-import { useNavigate } from "react-router-dom";
+import { Button } from "primereact/button";
 
-export function AppHeader() {
+interface AppHeaderProps {
+  onToggleSidebar: () => void;
+}
+
+export function AppHeader({ onToggleSidebar }: AppHeaderProps) {
   const logout = useAuthStore((s) => s.logout);
-  const navigate = useNavigate();
 
-  const items = [
-    { label: "Dashboard", command: () => navigate("/") },
-    { label: "Products",  command: () => navigate("/products") },
-  ];
-
-  const end = (
-    <button onClick={logout} style={{ cursor: "pointer" }}>
-      Logout
-    </button>
+  return (
+    <header className="app-header">
+      <div className="header-left">
+        <button 
+          onClick={onToggleSidebar} 
+          className="sidebar-toggle"
+        >
+          <i className="pi pi-bars"></i>
+        </button>
+      </div>
+      
+      <div className="header-right">
+        <Button 
+          icon="pi pi-search" 
+          rounded 
+          text 
+          size="small"
+          aria-label="Search" 
+        />
+        <Button 
+          icon="pi pi-bell" 
+          rounded 
+          text 
+          size="small"
+          aria-label="Notifications" 
+        />
+        <div className="header-divider"></div>
+        <Button 
+          icon="pi pi-sign-out" 
+          rounded 
+          text 
+          size="small"
+          onClick={logout} 
+          aria-label="Logout" 
+          tooltip="Logout"
+          tooltipOptions={{ position: 'bottom' }}
+        />
+      </div>
+    </header>
   );
-
-  return <Menubar model={items} end={end} />;
 }
