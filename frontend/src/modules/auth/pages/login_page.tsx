@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/auth_store";
-import { InputText } from "primereact/inputtext";
-import { Password } from "primereact/password";
-import { Button } from "primereact/button";
-import { Checkbox } from "primereact/checkbox";
-import { Card } from "primereact/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
 	const login = useAuthStore((s) => s.login);
@@ -25,79 +25,81 @@ export default function LoginPage() {
 		}, 800);
 	};
 
-	const header = (
-		<div className="flex justify-center pt-6">
-			<div className="w-10 h-10 bg-indigo-500 rounded-md flex items-center justify-center shadow-md mx-auto mb-3">
-				<i className="pi pi-bolt text-white text-sm" />
-			</div>
-		</div>
-	);
-
-	const footer = (
-		<div className="flex justify-center mt-3">
-			<Button
-				type="submit"
-				label={loading ? "Signing in…" : "Sign In"}
-				loading={loading}
-				icon={loading ? undefined : "pi pi-arrow-right"}
-				iconPos="right"
-				className="w-[70%]! text-sm!"
-				size="small"
-			/>
-		</div>
-	);
-
 	return (
-		<form onSubmit={handleSubmit}>
-			<Card
-				className="w-full max-w-sm"
-				header={header}
-				title={<p className="text-center text-sm font-bold text-slate-800 uppercase tracking-wide m-0">Sign In</p>}
-				subTitle={<p className="text-center text-xs text-slate-500 mt-1">Welcome back — enter your credentials</p>}
-				footer={footer}
-			>
-				<div className="flex flex-col gap-4">
-					{/* Email */}
-					<div className="flex flex-col gap-1.5">
-						<label htmlFor="email" className="text-xs font-bold text-slate-700 uppercase tracking-wide">Email</label>
-						<InputText
-							id="email"
-							type="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							placeholder="you@example.com"
-							required
-							className="w-full text-sm p-2"
-						/>
-					</div>
-
-					{/* Password */}
-					<div className="flex flex-col gap-1.5">
-						<label htmlFor="password" className="text-xs font-bold text-slate-700 uppercase tracking-wide">Password</label>
-						<Password
-							inputId="password"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							placeholder="••••••••"
-							required
-							inputClassName="w-full text-sm p-2"
-						/>
-					</div>
-
-					{/* Remember me */}
-					<div className="flex items-center justify-between mt-1">
-						<div className="flex items-center gap-2">
-							<Checkbox
-								inputId="remember"
-								checked={remember}
-								onChange={(e) => setRemember(e.checked ?? false)}
-							/>
-							<label htmlFor="remember" className="text-sm text-slate-600 cursor-pointer">Keep me signed in</label>
-						</div>
-						<a href="#" className="text-xs text-indigo-600 font-medium no-underline hover:text-indigo-400">Forgot?</a>
+		<div className="min-h-screen flex items-center justify-center bg-muted/40 p-4">
+			<form onSubmit={handleSubmit} className="w-full max-w-sm bg-background border border-border rounded-xl overflow-hidden">
+				<div className="flex justify-center pt-8 pb-4">
+					<div className="w-12 h-12 bg-primary text-primary-foreground rounded-xl flex items-center justify-center">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+							<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+						</svg>
 					</div>
 				</div>
-			</Card>
-		</form>
+				
+				<div className="px-6 pb-6">
+					<div className="text-center mb-6">
+						<h1 className="text-xl font-semibold tracking-tight">Sign In</h1>
+						<p className="text-sm text-muted-foreground mt-1">Welcome back — enter your credentials</p>
+					</div>
+					
+					<div className="space-y-4">
+						<div className="space-y-2">
+							<Label htmlFor="email">Email</Label>
+							<Input
+								id="email"
+								type="email"
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+								placeholder="you@example.com"
+								required
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<div className="flex items-center justify-between">
+								<Label htmlFor="password">Password</Label>
+								<a href="#" className="text-xs text-primary hover:underline font-medium">Forgot?</a>
+							</div>
+							<Input
+								id="password"
+								type="password"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								placeholder="••••••••"
+								required
+							/>
+						</div>
+
+						<div className="flex items-center space-x-2 pt-1">
+							<Checkbox
+								id="remember"
+								checked={remember}
+								onCheckedChange={(checked) => setRemember(checked === true)}
+							/>
+							<Label htmlFor="remember" className="text-sm font-normal cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+								Keep me signed in
+							</Label>
+						</div>
+					</div>
+				</div>
+
+				<div className="px-6 pb-8">
+					<Button
+						type="submit"
+						className="w-full shadow-none"
+						disabled={loading}
+					>
+						{loading ? (
+							<>
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+								Signing in…
+							</>
+						) : (
+							"Sign In"
+						)}
+					</Button>
+				</div>
+			</form>
+		</div>
 	);
 }
