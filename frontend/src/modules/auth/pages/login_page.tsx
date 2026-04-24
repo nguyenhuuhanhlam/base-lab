@@ -6,7 +6,6 @@ import { Password } from "primereact/password";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { Card } from "primereact/card";
-import "./login_page.css";
 
 export default function LoginPage() {
 	const login = useAuthStore((s) => s.login);
@@ -27,22 +26,22 @@ export default function LoginPage() {
 	};
 
 	const header = (
-		<div className="login-header-top">
-			<div className="login-logo">
-				<i className="pi pi-bolt"></i>
+		<div className="flex justify-center pt-6">
+			<div className="w-10 h-10 bg-indigo-500 rounded-md flex items-center justify-center shadow-md mx-auto mb-3">
+				<i className="pi pi-bolt text-white text-sm" />
 			</div>
 		</div>
 	);
 
 	const footer = (
-		<div className="login-footer">
+		<div className="flex justify-center mt-3">
 			<Button
 				type="submit"
 				label={loading ? "Signing in…" : "Sign In"}
 				loading={loading}
 				icon={loading ? undefined : "pi pi-arrow-right"}
 				iconPos="right"
-				className="submit-button"
+				className="w-[70%]! text-sm!"
 				size="small"
 			/>
 		</div>
@@ -50,17 +49,17 @@ export default function LoginPage() {
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<Card 
-				className="login-card"
+			<Card
+				className="w-full max-w-sm"
 				header={header}
-				title="Sign In"
-				subTitle="Welcome back — enter your credentials"
+				title={<p className="text-center text-sm font-bold text-slate-800 uppercase tracking-wide m-0">Sign In</p>}
+				subTitle={<p className="text-center text-xs text-slate-500 mt-1">Welcome back — enter your credentials</p>}
 				footer={footer}
 			>
-				<div className="login-form">
+				<div className="flex flex-col gap-4">
 					{/* Email */}
-					<div className="form-group">
-						<label htmlFor="email" className="form-label">Email</label>
+					<div className="flex flex-col gap-1.5">
+						<label htmlFor="email" className="text-xs font-bold text-slate-700 uppercase tracking-wide">Email</label>
 						<InputText
 							id="email"
 							type="email"
@@ -68,35 +67,34 @@ export default function LoginPage() {
 							onChange={(e) => setEmail(e.target.value)}
 							placeholder="you@example.com"
 							required
-							className="form-input"
+							className="w-full text-sm p-2"
 						/>
 					</div>
 
 					{/* Password */}
-					<div className="form-group">
-						<label htmlFor="password" className="form-label">Password</label>
+					<div className="flex flex-col gap-1.5">
+						<label htmlFor="password" className="text-xs font-bold text-slate-700 uppercase tracking-wide">Password</label>
 						<Password
 							inputId="password"
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 							placeholder="••••••••"
-							toggleMask
 							required
-							inputClassName="form-input"
+							inputClassName="w-full text-sm p-2"
 						/>
 					</div>
 
 					{/* Remember me */}
-					<div className="login-options">
-						<div className="remember-me">
+					<div className="flex items-center justify-between mt-1">
+						<div className="flex items-center gap-2">
 							<Checkbox
 								inputId="remember"
 								checked={remember}
 								onChange={(e) => setRemember(e.checked ?? false)}
 							/>
-							<label htmlFor="remember" className="remember-label">Keep me signed in</label>
+							<label htmlFor="remember" className="text-sm text-slate-600 cursor-pointer">Keep me signed in</label>
 						</div>
-						<a href="#" className="forgot-password">Forgot?</a>
+						<a href="#" className="text-xs text-indigo-600 font-medium no-underline hover:text-indigo-400">Forgot?</a>
 					</div>
 				</div>
 			</Card>
