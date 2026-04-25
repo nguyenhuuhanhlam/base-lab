@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/auth_store";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
@@ -13,7 +9,6 @@ export default function LoginPage() {
 
 	const [email, setEmail] = useState("demo@baselab.io");
 	const [password, setPassword] = useState("password");
-	const [remember, setRemember] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	const handleSubmit = (e: React.FormEvent) => {
@@ -26,79 +21,111 @@ export default function LoginPage() {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-muted/40 p-4">
-			<form onSubmit={handleSubmit} className="w-full max-w-sm bg-background border border-border rounded-xl overflow-hidden">
-				<div className="flex justify-center pt-8 pb-4">
-					<div className="w-12 h-12 bg-primary text-primary-foreground rounded-xl flex items-center justify-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-							<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-						</svg>
-					</div>
-				</div>
-				
-				<div className="px-6 pb-6">
-					<div className="text-center mb-6">
-						<h1 className="text-xl font-semibold tracking-tight">Sign In</h1>
-						<p className="text-sm text-muted-foreground mt-1">Welcome back — enter your credentials</p>
-					</div>
-					
-					<div className="space-y-4">
-						<div className="space-y-2">
-							<Label htmlFor="email">Email</Label>
-							<Input
-								id="email"
-								type="email"
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
-								placeholder="you@example.com"
-								required
-							/>
-						</div>
-
-						<div className="space-y-2">
-							<div className="flex items-center justify-between">
-								<Label htmlFor="password">Password</Label>
-								<a href="#" className="text-xs text-primary hover:underline font-medium">Forgot?</a>
-							</div>
-							<Input
-								id="password"
-								type="password"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								placeholder="••••••••"
-								required
-							/>
-						</div>
-
-						<div className="flex items-center space-x-2 pt-1">
-							<Checkbox
-								id="remember"
-								checked={remember}
-								onCheckedChange={(checked) => setRemember(checked === true)}
-							/>
-							<Label htmlFor="remember" className="text-sm font-normal cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-								Keep me signed in
-							</Label>
-						</div>
-					</div>
-				</div>
-
-				<div className="px-6 pb-8">
-					<Button
-						type="submit"
-						className="w-full shadow-none"
-						disabled={loading}
+		<div
+			className="min-h-screen flex items-center justify-center p-4"
+			style={{ backgroundColor: "#2e2e2e" }}
+		>
+			<form
+				onSubmit={handleSubmit}
+				className="w-full max-w-sm rounded-2xl p-10 flex flex-col gap-6"
+				style={{ backgroundColor: "#c9c5bc" }}
+			>
+				{/* Logo placeholder */}
+				<div className="flex justify-center">
+					<div
+						className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm text-white"
+						style={{ backgroundColor: "#3d3a35" }}
 					>
-						{loading ? (
-							<>
-								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-								Signing in…
-							</>
-						) : (
-							"Sign In"
-						)}
-					</Button>
+						B
+					</div>
 				</div>
+
+				{/* Heading */}
+				<h1
+					className="text-center text-sm font-semibold uppercase tracking-widest"
+					style={{ color: "#3d3a35" }}
+				>
+					Chào mừng trở lại
+				</h1>
+
+				{/* Fields */}
+				<div className="flex flex-col gap-4">
+					<div className="flex flex-col gap-1.5">
+						<label
+							htmlFor="email"
+							className="text-xs font-medium"
+							style={{ color: "#3d3a35" }}
+						>
+							Email của bạn
+						</label>
+						<input
+							id="email"
+							type="email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							placeholder="Email@example.com"
+							required
+							className="w-full rounded-lg px-3 py-2 text-sm outline-none border border-transparent focus:border-stone-400 placeholder:text-stone-400"
+							style={{ backgroundColor: "#ffffff", color: "#3d3a35" }}
+						/>
+					</div>
+
+					<div className="flex flex-col gap-1.5">
+						<label
+							htmlFor="password"
+							className="text-xs font-medium"
+							style={{ color: "#3d3a35" }}
+						>
+							Mật khẩu
+						</label>
+						<input
+							id="password"
+							type="password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							placeholder="••••••••"
+							required
+							className="w-full rounded-lg px-3 py-2 text-sm outline-none border border-transparent focus:border-stone-400 placeholder:text-stone-400"
+							style={{ backgroundColor: "#ffffff", color: "#3d3a35" }}
+						/>
+					</div>
+				</div>
+
+				{/* Forgot password */}
+				<div className="text-center -mt-2">
+					<a
+						href="#"
+						className="text-xs font-semibold hover:underline"
+						style={{ color: "#3d3a35" }}
+					>
+						Quên mật khẩu?
+					</a>
+				</div>
+
+				{/* Submit */}
+				<button
+					type="submit"
+					disabled={loading}
+					className="w-full rounded-lg py-2 text-sm font-medium text-white flex items-center justify-center gap-2 transition-opacity hover:opacity-90 disabled:opacity-60"
+					style={{ backgroundColor: "#3d3a35" }}
+				>
+					{loading ? (
+						<>
+							<Loader2 className="h-4 w-4 animate-spin" />
+							Đang đăng nhập…
+						</>
+					) : (
+						"Đăng nhập"
+					)}
+				</button>
+
+				{/* Register link */}
+				<p className="text-center text-xs" style={{ color: "#3d3a35" }}>
+					Chưa có tài khoản?{" "}
+					<a href="#" className="font-semibold hover:underline">
+						Đăng ký
+					</a>
+				</p>
 			</form>
 		</div>
 	);

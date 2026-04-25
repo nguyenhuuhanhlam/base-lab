@@ -1,30 +1,12 @@
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 
-type AppHeaderProps = {
-  isCollapsed: boolean;
-  setIsCollapsed: (value: boolean) => void;
-};
-
-export function AppHeader({ isCollapsed, setIsCollapsed }: AppHeaderProps) {
+export function AppHeader() {
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-4 md:px-6 bg-background border-b border-border">
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" onClick={() => setIsCollapsed(!isCollapsed)}>
-          {isCollapsed ? (
-            <PanelLeftOpen className="h-5 w-5" />
-          ) : (
-            <PanelLeftClose className="h-5 w-5" />
-          )}
-          <span className="sr-only">Toggle Sidebar</span>
-        </Button>
-      </div>
-      
-      <div className="flex items-center gap-4">
-        {/* User profile avatar */}
-        <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground font-medium text-sm">
-          U
-        </div>
+    <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border bg-background px-4">
+      <SidebarTrigger className="-ml-1" />
+      <div className="flex items-center h-4">
+        <Separator orientation="vertical" />
       </div>
     </header>
   );
