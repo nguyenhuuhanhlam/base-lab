@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { allRoutes } from "@/router";
 import { PrivateRoute } from "@/router/private_route";
+import { RoleRoute } from "@/router/role_route";
 import { MainLayout } from "@/layouts/main_layout";
 import { AuthLayout } from "@/layouts/auth_layout";
 import { useAuthSync } from "@/hooks/use_auth_sync";
@@ -16,8 +17,15 @@ const layoutMap = {
 };
 
 const router = createBrowserRouter(
-  allRoutes.map(({ path, component: Component, layout = "main", auth = false }) => {
+  allRoutes.map(({ path, component: Component, layout = "main", auth = false, roles }) => {
     const Layout = layoutMap[layout];
+
+    let content = <Component />;
+    if (roles && roles.length > 0) {
+      content = <RoleRoute roles={roles}><Component /></RoleRoute>;
+    } else if (auth) {
+      content = <PrivateRoute><Component /></PrivateRoute>;
+    }
 
     const element = (
       <Layout>
@@ -28,13 +36,7 @@ const router = createBrowserRouter(
             </div>
           }
         >
-          {auth ? (
-            <PrivateRoute>
-              <Component />
-            </PrivateRoute>
-          ) : (
-            <Component />
-          )}
+          {content}
         </Suspense>
       </Layout>
     );

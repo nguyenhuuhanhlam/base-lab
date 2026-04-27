@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Package } from "lucide-react";
+import { LayoutDashboard, Package, Users } from "lucide-react";
 import {
 	Sidebar,
 	SidebarContent,
@@ -18,16 +18,49 @@ import { useAuthStore } from "@/store/auth_store";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { AUTH_DISPLAY_FIELD } from "@/lib/constants";
+import type { UserRole } from "@/router/types";
 
-const navItems = [
+const overviewItems = [
 	{ to: "/", icon: LayoutDashboard, label: "Dashboard" },
 	{ to: "/products", icon: Package, label: "Products" },
 ];
+
+const managerItems = [
+	{ to: "/users", icon: Users, label: "Users" },
+];
+
+const MANAGER_ROLES: UserRole[] = ["admin", "manager"];
+
+function NavGroup({
+	items,
+}: {
+	items: { to: string; icon: React.ElementType; label: string }[];
+}) {
+	return (
+		<SidebarMenu>
+			{items.map(({ to, icon: Icon, label }) => (
+				<SidebarMenuItem key={to}>
+					<NavLink to={to} end={to === "/"}>
+						{({ isActive }) => (
+							<SidebarMenuButton isActive={isActive} tooltip={label}>
+								<Icon />
+								<span>{label}</span>
+							</SidebarMenuButton>
+						)}
+					</NavLink>
+				</SidebarMenuItem>
+			))}
+		</SidebarMenu>
+	);
+}
 
 export function AppSidebar() {
 	const user = useAuthStore((s) => s.user);
 	const profile = useAuthStore((s) => s.profile);
 	const logout = useAuthStore((s) => s.logout);
+
+	const userRole = (profile?.role as UserRole | undefined) ?? "user";
+	const isManager = MANAGER_ROLES.includes(userRole);
 
 	const handleLogout = async () => {
 		await signOut(auth);
@@ -53,16 +86,16 @@ export function AppSidebar() {
 
 	const userData = user
 		? {
-			name: displayName,
-			email: user.email || "",
-			avatar: user.photoURL || undefined,
-			initials: getInitials(displayName, user.email),
-		}
+				name: displayName,
+				email: user.email || "",
+				avatar: user.photoURL || undefined,
+				initials: getInitials(displayName, user.email),
+			}
 		: {
-			name: "Guest",
-			email: "",
-			initials: "GS",
-		};
+				name: "Guest",
+				email: "",
+				initials: "GS",
+			};
 
 	return (
 		<Sidebar collapsible="icon">
@@ -84,25 +117,23 @@ export function AppSidebar() {
 
 			{/* Nav */}
 			<SidebarContent>
+				{/* Overview */}
 				<SidebarGroup>
 					<SidebarGroupLabel>Overview</SidebarGroupLabel>
 					<SidebarGroupContent>
-						<SidebarMenu>
-							{navItems.map(({ to, icon: Icon, label }) => (
-								<SidebarMenuItem key={to}>
-									<NavLink to={to} end={to === "/"}>
-										{({ isActive }) => (
-											<SidebarMenuButton isActive={isActive} tooltip={label}>
-												<Icon />
-												<span>{label}</span>
-											</SidebarMenuButton>
-										)}
-									</NavLink>
-								</SidebarMenuItem>
-							))}
-						</SidebarMenu>
+						<NavGroup items={overviewItems} />
 					</SidebarGroupContent>
 				</SidebarGroup>
+
+				{/* Manager — chỉ hiện với admin / manager */}
+				{isManager && (
+					<SidebarGroup>
+						<SidebarGroupLabel>Manager</SidebarGroupLabel>
+						<SidebarGroupContent>
+							<NavGroup items={managerItems} />
+						</SidebarGroupContent>
+					</SidebarGroup>
+				)}
 			</SidebarContent>
 
 			{/* User */}
