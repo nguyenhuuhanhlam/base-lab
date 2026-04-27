@@ -4,7 +4,10 @@ import { allRoutes } from "@/router";
 import { PrivateRoute } from "@/router/private_route";
 import { MainLayout } from "@/layouts/main_layout";
 import { AuthLayout } from "@/layouts/auth_layout";
+import { useAuthSync } from "@/hooks/use_auth_sync";
 import "./app.css";
+
+import { Loader2 } from "lucide-react";
 
 const layoutMap = {
   main: MainLayout,
@@ -18,7 +21,13 @@ const router = createBrowserRouter(
 
     const element = (
       <Layout>
-        <Suspense fallback={<div className="page-loader">Loading…</div>}>
+        <Suspense
+          fallback={
+            <div className="flex h-screen w-full items-center justify-center bg-stone-50">
+              <Loader2 className="h-8 w-8 animate-spin text-stone-700" />
+            </div>
+          }
+        >
           {auth ? (
             <PrivateRoute>
               <Component />
@@ -35,5 +44,6 @@ const router = createBrowserRouter(
 );
 
 export default function App() {
+  useAuthSync();
   return <RouterProvider router={router} />;
 }
