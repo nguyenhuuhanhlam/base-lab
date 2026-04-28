@@ -9,7 +9,7 @@ def set_admin_claims(uid):
     
     if not os.path.exists(key_path):
         print(f"❌ Không tìm thấy file: {key_path}")
-        print("Vui lòng tải serviceAccountKey.json từ Firebase Console và đặt vào thư mục scripts.")
+        print("Vui lòng tải serviceAccountKey.json từ Firebase Console và đặt vào thư mục scripts!")
         return
 
     try:
