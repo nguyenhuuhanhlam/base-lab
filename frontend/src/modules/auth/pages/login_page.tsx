@@ -7,6 +7,9 @@ import {
 	signInWithPopup,
 	GoogleAuthProvider,
 } from "firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { AUTH_COLLECTION, AUTH_DISPLAY_FIELD } from "@/lib/constants";
 import { Loader2 } from "lucide-react";
 import {
 	Card,
@@ -31,13 +34,13 @@ export default function LoginPage() {
 		}
 	}, [isLoggedIn, navigate]);
 
-	if (isLoggedIn) return null;
-
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [googleLoading, setGoogleLoading] = useState(false);
 	const [error, setError] = useState("");
+
+	if (isLoggedIn) return null;
 
 	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
@@ -45,6 +48,15 @@ export default function LoginPage() {
 		setLoading(true);
 		try {
 			const result = await signInWithEmailAndPassword(auth, email, password);
+			
+			// Lưu/Cập nhật thông tin vào Firestore
+			await setDoc(doc(db, AUTH_COLLECTION, result.user.uid), {
+				email: result.user.email,
+				uid: result.user.uid,
+				provider: "password",
+				updatedAt: serverTimestamp(),
+			}, { merge: true });
+
 			login(result.user);
 			navigate("/");
 		} catch {
@@ -59,6 +71,17 @@ export default function LoginPage() {
 		setGoogleLoading(true);
 		try {
 			const result = await signInWithPopup(auth, googleProvider);
+			
+			// Lưu/Cập nhật thông tin vào Firestore
+			await setDoc(doc(db, AUTH_COLLECTION, result.user.uid), {
+				email: result.user.email,
+				[AUTH_DISPLAY_FIELD]: result.user.displayName,
+				photoURL: result.user.photoURL,
+				uid: result.user.uid,
+				provider: "google.com",
+				updatedAt: serverTimestamp(),
+			}, { merge: true });
+
 			login(result.user);
 			navigate("/");
 		} catch {

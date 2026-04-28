@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { AUTH_COLLECTION } from "@/lib/constants";
 
@@ -10,6 +10,8 @@ export interface UserRecord {
   displayName?: string;
   photoURL?: string;
   uid?: string;
+  role?: string;
+  provider?: string;
   createdAt?: { seconds: number; nanoseconds: number } | null;
   [key: string]: unknown;
 }
@@ -18,6 +20,8 @@ interface UseUsersResult {
   users: UserRecord[];
   isLoading: boolean;
   error: string | null;
+  updateUser: (id: string, data: Partial<UserRecord>) => Promise<void>;
+  deleteUser: (id: string) => Promise<void>;
 }
 
 export function useUsers(): UseUsersResult {
@@ -54,5 +58,25 @@ export function useUsers(): UseUsersResult {
     return () => unsubscribe();
   }, []);
 
-  return { users, isLoading, error };
+  const updateUser = async (id: string, data: Partial<UserRecord>) => {
+    try {
+      const userRef = doc(db, AUTH_COLLECTION, id);
+      await updateDoc(userRef, data as any);
+    } catch (err: any) {
+      console.error("updateUser error:", err);
+      throw err;
+    }
+  };
+
+  const deleteUser = async (id: string) => {
+    try {
+      const userRef = doc(db, AUTH_COLLECTION, id);
+      await deleteDoc(userRef);
+    } catch (err: any) {
+      console.error("deleteUser error:", err);
+      throw err;
+    }
+  };
+
+  return { users, isLoading, error, updateUser, deleteUser };
 }
