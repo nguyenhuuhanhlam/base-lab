@@ -66,7 +66,7 @@ export function UserEditPanel({ user, onClose, onUpdate, onDelete }: UserEditPan
   };
 
   return (
-    <div className="h-full pl-4 flex flex-col">
+    <div className="h-full flex flex-col">
       <div className="flex items-center justify-between mb-6 pt-1">
         <h2 className="text-sm font-semibold">Chi tiết người dùng</h2>
         <Button variant="ghost" size="icon" className="size-8 rounded-full" onClick={onClose}>

@@ -39,9 +39,16 @@ interface UserTableProps {
   isLoading: boolean;
   selectedUserId: string | null;
   onSelectUser: (id: string) => void;
+  isDetailOpen?: boolean;
 }
 
-export function UserTable({ users, isLoading, selectedUserId, onSelectUser }: UserTableProps) {
+export function UserTable({ 
+  users, 
+  isLoading, 
+  selectedUserId, 
+  onSelectUser,
+  isDetailOpen = false 
+}: UserTableProps) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -76,7 +83,7 @@ export function UserTable({ users, isLoading, selectedUserId, onSelectUser }: Us
               email={row.original.email}
               photoURL={row.original.photoURL}
             />
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium truncate max-w-[120px] lg:max-w-[200px]">
               {name || <span className="text-muted-foreground font-normal">—</span>}
             </span>
           </div>
@@ -87,7 +94,7 @@ export function UserTable({ users, isLoading, selectedUserId, onSelectUser }: Us
       accessorKey: "email",
       header: ({ column }) => (
         <button
-          className="group flex items-center text-xs font-medium cursor-pointer select-none"
+          className="group hidden md:flex items-center text-xs font-medium cursor-pointer select-none"
           onClick={column.getToggleSortingHandler()}
         >
           Email
@@ -95,7 +102,7 @@ export function UserTable({ users, isLoading, selectedUserId, onSelectUser }: Us
         </button>
       ),
       cell: ({ getValue }) => (
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm text-muted-foreground truncate max-w-[150px] hidden md:inline-block">
           {(getValue() as string) || "—"}
         </span>
       ),
@@ -159,7 +166,14 @@ export function UserTable({ users, isLoading, selectedUserId, onSelectUser }: Us
   const table = useReactTable({
     data: users,
     columns,
-    state: { globalFilter, sorting, pagination },
+    state: { 
+      globalFilter, 
+      sorting, 
+      pagination,
+      columnVisibility: {
+        email: !isDetailOpen,
+      }
+    },
     onGlobalFilterChange: (val) => {
       setGlobalFilter(val);
       setPagination((p) => ({ ...p, pageIndex: 0 }));
@@ -178,7 +192,7 @@ export function UserTable({ users, isLoading, selectedUserId, onSelectUser }: Us
   const skeletonRows = useMemo(() => Array.from({ length: pagination.pageSize }), [pagination.pageSize]);
 
   return (
-    <div className="flex flex-col gap-4 h-full pr-4 overflow-y-auto">
+    <div className="flex flex-col gap-4 h-full overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-between pt-1">
         <div className="flex items-center gap-3">
@@ -218,7 +232,10 @@ export function UserTable({ users, isLoading, selectedUserId, onSelectUser }: Us
               {table.getHeaderGroups().map((hg) => (
                 <TableRow key={hg.id} className="hover:bg-transparent">
                   {hg.headers.map((header) => (
-                    <TableHead key={header.id} className="text-xs h-9 px-3">
+                    <TableHead 
+                      key={header.id} 
+                      className={`text-xs h-9 px-3 ${header.id === 'email' ? 'hidden md:table-cell' : ''}`}
+                    >
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext()
@@ -267,7 +284,10 @@ export function UserTable({ users, isLoading, selectedUserId, onSelectUser }: Us
                     onClick={() => onSelectUser(row.original.id)}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="px-3 py-2.5">
+                      <TableCell 
+                        key={cell.id} 
+                        className={`px-3 py-2.5 ${cell.column.id === 'email' ? 'hidden md:table-cell' : ''}`}
+                      >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
