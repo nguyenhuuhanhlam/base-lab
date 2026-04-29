@@ -38,11 +38,20 @@ export function useUsers(): UseUsersResult {
           ...doc.data(),
         }));
 
-        // Sort client-side: documents with createdAt first (desc), rest at end
+        // Client-side sorting: Google accounts first, then alphabetical by name/email
         data.sort((a, b) => {
-          const aTs = a.createdAt?.seconds ?? 0;
-          const bTs = b.createdAt?.seconds ?? 0;
-          return bTs - aTs;
+          // 1. Prioritize Google accounts
+          const isGoogleA = a.provider === 'google.com';
+          const isGoogleB = b.provider === 'google.com';
+          
+          if (isGoogleA && !isGoogleB) return -1;
+          if (!isGoogleA && isGoogleB) return 1;
+          
+          // 2. Sort alphabetically by displayName or email
+          const nameA = (a.displayName || a.email || "").toLowerCase();
+          const nameB = (b.displayName || b.email || "").toLowerCase();
+          
+          return nameA.localeCompare(nameB);
         });
 
         setUsers(data);
