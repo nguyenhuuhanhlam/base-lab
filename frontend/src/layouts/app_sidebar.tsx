@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Package, Users } from "lucide-react";
+import { LayoutDashboard, Package, Users, Beaker } from "lucide-react";
 import {
 	Sidebar,
 	SidebarContent,
@@ -27,6 +27,10 @@ const overviewItems = [
 
 const managerItems = [
 	{ to: "/users", icon: Users, label: "Users" },
+];
+
+const experimentalItems = [
+	{ to: "/test-ui", icon: Beaker, label: "Test UI" },
 ];
 
 const MANAGER_ROLES: UserRole[] = ["admin", "manager"];
@@ -134,6 +138,14 @@ export function AppSidebar() {
 						</SidebarGroupContent>
 					</SidebarGroup>
 				)}
+
+				{/* Experimental */}
+				<SidebarGroup>
+					<SidebarGroupLabel>Experimental</SidebarGroupLabel>
+					<SidebarGroupContent>
+						<NavGroup items={experimentalItems} />
+					</SidebarGroupContent>
+				</SidebarGroup>
 			</SidebarContent>
 
 			{/* User */}
