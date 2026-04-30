@@ -1,110 +1,85 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import { useMemo, useState } from "react";
+import { Users, PanelRightOpen, PanelRightClose } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { HybridOverlayLayout } from "@/components/shared/hybrid_overlay_layout";
 import { useUsers } from "../hooks/use_users";
-import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
 import { UserTable } from "../components/user_table";
 import { UserEditPanel } from "../components/user_edit_panel";
-
-const PanelGroup = ResizablePanelGroup as any;
 
 export default function UserListPage() {
   const { users, isLoading, error, updateUser, deleteUser } = useUsers();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const isMobile = useIsMobile();
-  const [isNarrow, setIsNarrow] = useState(window.innerWidth < 1024);
-
-  useEffect(() => {
-    const handleResize = () => setIsNarrow(window.innerWidth < 1024);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Chuyển sang chiều dọc nếu là Mobile HOẶC màn hình hơi hẹp mà đang mở chi tiết
-  const isVertical = isMobile || (isNarrow && !!selectedUserId);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const selectedUser = useMemo(
-    () => users.find((u) => u.id === selectedUserId) || null,
+    () => users.find((u) => u.id === selectedUserId) ?? null,
     [users, selectedUserId]
   );
 
+  const handleSelectUser = (id: string) => {
+    setSelectedUserId(id);
+    setIsDetailOpen(true);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedUserId(null);
+    setIsDetailOpen(false);
+  };
 
   return (
-    <div className="h-[calc(100vh-120px)] flex flex-col overflow-hidden">
-      {/* Error message */}
-      {error && (
-        <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">
-          Lỗi tải dữ liệu: {error}
-        </p>
-      )}
-
-      {/* MOBILE/NARROW LAYOUT (Stacked) */}
-      {isVertical ? (
-        <div className="flex flex-col flex-1 overflow-hidden px-0">
-          <div className={cn("flex-1 overflow-hidden", selectedUser ? "h-[40%]" : "h-full")}>
+    <div className="h-[calc(100vh-120px)]">
+      <HybridOverlayLayout
+        title="Quản lý người dùng"
+        subtitle="Danh sách tài khoản đã đăng ký"
+        icon={<Users size={20} />}
+        isDetailOpen={isDetailOpen}
+        onDetailOpenChange={(open) => { if (!open) handleCloseDetail(); else setIsDetailOpen(true); }}
+        toolbar={({ isDetailOpen, onToggle }) => (
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 gap-1.5 rounded-none border-stone-200/20 bg-stone-50/5 hover:bg-stone-50/10"
+            onClick={onToggle}
+          >
+            {isDetailOpen
+              ? <><PanelRightClose size={14} /> Đóng</>
+              : <><PanelRightOpen size={14} /> Chi tiết</>}
+          </Button>
+        )}
+        mainContent={
+          <>
+            {error && (
+              <p className="text-xs text-red-600 bg-red-50 border border-red-200 px-3 py-2 mb-3 mx-0">
+                Lỗi tải dữ liệu: {error}
+              </p>
+            )}
             <UserTable
               users={users}
               isLoading={isLoading}
               selectedUserId={selectedUserId}
-              onSelectUser={setSelectedUserId}
-              isDetailOpen={!!selectedUser}
+              onSelectUser={handleSelectUser}
+              isDetailOpen={isDetailOpen}
             />
-          </div>
-
-          {selectedUser && (
-            <div className="h-[60%] border-t bg-card overflow-auto px-4 animate-in slide-in-from-bottom duration-300">
+          </>
+        }
+        detailContent={
+          selectedUser ? (
+            <div className="px-4 py-2">
               <UserEditPanel
                 key={selectedUser.id}
                 user={selectedUser}
-                onClose={() => setSelectedUserId(null)}
+                onClose={handleCloseDetail}
                 onUpdate={updateUser}
                 onDelete={deleteUser}
               />
             </div>
-          )}
-        </div>
-      ) : (
-        /* DESKTOP LAYOUT (Resizable) */
-        <PanelGroup 
-          key="desktop-layout"
-          direction="horizontal" 
-          className="flex-1"
-          id="user-list-layout"
-        >
-          <ResizablePanel defaultSize={selectedUser ? 65 : 100} minSize={30}>
-            <div className={cn("h-full", selectedUser ? "pr-4" : "pr-0")}>
-              <UserTable
-                users={users}
-                isLoading={isLoading}
-                selectedUserId={selectedUserId}
-                onSelectUser={setSelectedUserId}
-                isDetailOpen={!!selectedUser}
-              />
+          ) : (
+            <div className="flex items-center justify-center h-full text-xs text-muted-foreground">
+              Chọn người dùng để xem chi tiết
             </div>
-          </ResizablePanel>
-
-          {selectedUser && (
-            <>
-              <ResizableHandle withHandle />
-              <ResizablePanel defaultSize={35} minSize={25}>
-                <div className="h-full pl-4">
-                  <UserEditPanel
-                    key={selectedUser.id}
-                    user={selectedUser}
-                    onClose={() => setSelectedUserId(null)}
-                    onUpdate={updateUser}
-                    onDelete={deleteUser}
-                  />
-                </div>
-              </ResizablePanel>
-            </>
-          )}
-        </PanelGroup>
-      )}
+          )
+        }
+      />
     </div>
   );
 }

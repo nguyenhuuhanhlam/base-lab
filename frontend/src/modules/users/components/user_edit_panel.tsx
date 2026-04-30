@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Save, Trash2, Loader2 } from "lucide-react";
+import { Save, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -67,14 +67,7 @@ export function UserEditPanel({ user, onClose, onUpdate, onDelete }: UserEditPan
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between mb-6 pt-1">
-        <h2 className="text-sm font-semibold">Chi tiết người dùng</h2>
-        <Button variant="ghost" size="icon" className="size-8 rounded-full" onClick={onClose}>
-          <X size={16} />
-        </Button>
-      </div>
-
-      <div className="flex items-center gap-4 mb-8">
+      <div className="flex items-center gap-4 mb-8 pt-1">
         <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0 overflow-hidden">
           {user.photoURL ? (
             <img src={user.photoURL} alt="" className="size-full object-cover" />

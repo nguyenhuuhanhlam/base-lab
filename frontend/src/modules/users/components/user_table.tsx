@@ -22,13 +22,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Search,
-  Users,
-  Pencil,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, Users } from "lucide-react";
 import { type UserRecord } from "../hooks/use_users";
 import { AUTH_DISPLAY_FIELD } from "@/lib/constants";
 import { UserAvatar } from "./user_avatar";
@@ -144,7 +138,7 @@ export function UserTable({
     },
     {
       id: "actions",
-      header: () => <span className="text-xs font-medium">Thao tác</span>,
+      header: () => null,
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
           <Button
@@ -156,7 +150,7 @@ export function UserTable({
               onSelectUser(row.original.id);
             }}
           >
-            <Pencil className="size-3.5" />
+            <ChevronRight className="size-3.5" />
           </Button>
         </div>
       ),
@@ -193,35 +187,22 @@ export function UserTable({
 
   return (
     <div className="flex flex-col gap-4 h-full overflow-y-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between pt-1">
-        <div className="flex items-center gap-3">
-          <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shrink-0">
-            <Users size={16} />
-          </div>
-          <div>
-            <h1 className="text-sm font-semibold leading-tight">Users</h1>
-            <p className="text-xs text-muted-foreground">
-              Danh sách người dùng đã đăng ký
-            </p>
-          </div>
+      {/* Search + count */}
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+          <Input
+            placeholder="Tìm theo tên hoặc email…"
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="pl-8 h-8 text-sm"
+          />
         </div>
         {!isLoading && (
-          <span className="text-xs text-muted-foreground bg-muted border border-border px-2.5 py-1 rounded-full">
+          <span className="text-xs text-muted-foreground bg-muted border border-border px-2.5 py-1 rounded-full shrink-0">
             {totalFiltered} / {users.length}
           </span>
         )}
-      </div>
-
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
-        <Input
-          placeholder="Tìm theo tên hoặc email…"
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="pl-8 h-8 text-sm"
-        />
       </div>
 
       {/* Table */}
